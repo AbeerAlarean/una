@@ -1,5 +1,5 @@
 // Deterministic tests for the night shift helpers (no model, no server).
-import { parseResetTime, looksLikeLimit, isAway, wakeDecision, capMath, weekWindow, usageUnits } from './night.mjs';
+import { parseResetTime, looksLikeLimit, isAway, wakeDecision, capMath, weekWindow, usageUnits, rotateDecision, askDue, dayKey } from './night.mjs';
 import { fenceHook, defaultWorkerModel } from './server.mjs';
 
 let bad = 0, n = 0;
@@ -73,6 +73,28 @@ eq("a worker's own sub-worker gets sonnet too", wk.hookSpecificOutput?.updatedIn
 const blocked = await fenceHook('go', () => true)({ tool_name: 'Agent', tool_input: { description: 'x' } });
 eq('no new workers once the night share is used', blocked.hookSpecificOutput?.permissionDecision, 'deny');
 eq('label for a model-less worker', defaultWorkerModel({ description: 'x' }), 'sonnet');
+
+// ── rotation only when heavy AND idle ──
+const heavy = { ctx: 170000, windowSize: 1000000, workers: 0, turnActive: false, rotating: false, hasConversation: true, unchecked: 0, sinceActivityMs: 5 * MIN };
+eq('default threshold is 160000 tokens', rotateDecision({ ...heavy, ctx: 159000 }).rotate, false);
+eq('heavy and idle rotates', rotateDecision(heavy).rotate, true);
+eq('share alone rotates', rotateDecision({ ...heavy, ctx: 600000 }).rotate, true);
+eq('worker running blocks', rotateDecision({ ...heavy, workers: 1 }).rotate, false);
+eq('mid-turn blocks', rotateDecision({ ...heavy, turnActive: true }).rotate, false);
+eq('pending verdict blocks', rotateDecision({ ...heavy, unchecked: 1 }).rotate, false);
+eq('under 2 min since last activity blocks', rotateDecision({ ...heavy, sinceActivityMs: 119000 }).rotate, false);
+eq('exactly 2 min is idle', rotateDecision({ ...heavy, sinceActivityMs: 120000 }).rotate, true);
+eq('already rotating', rotateDecision({ ...heavy, rotating: true }).rotate, false);
+eq('no conversation', rotateDecision({ ...heavy, hasConversation: false }).rotate, false);
+
+// ── the morning question: not within 7 days of an answer, never twice in a day ──
+const T = kl('2026-10-20T09:00:00');
+eq('never asked or answered → ask', askDue({ now: T }), true);
+eq('answered 3 days ago → no', askDue({ now: T, answeredAt: T - 3 * 86400000 }), false);
+eq('answered 8 days ago → ask', askDue({ now: T, answeredAt: T - 8 * 86400000 }), true);
+eq('asked earlier today → no', askDue({ now: T, answeredAt: 0, askedAt: kl('2026-10-20T01:00:00') }), false);
+eq('asked yesterday, no answer → may ask', askDue({ now: T, answeredAt: 0, askedAt: kl('2026-10-19T09:00:00') }), true);
+eq('day key in the given zone', dayKey(kl('2026-10-20T00:30:00'), 'Asia/Kuala_Lumpur'), '2026-10-20');
 
 console.log(bad ? `FAILED (${bad}/${n})` : `night: all ${n} cases ok`);
 process.exit(bad ? 1 : 0);

@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "repository": "github:AbeerAlarean/sahar",
-  "description": "Sahar — a chief of staff for a builder's work, on your own Claude Code login.",
+  "description": "Sahar \u2014 a chief of staff for a builder's work, on your own Claude Code login.",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -15,7 +15,9 @@
     "uninstall-service": "node scripts/service.mjs uninstall",
     "seed": "node seed.mjs",
     "seed:apply": "node seed.mjs --apply",
-    "test": "node fence.test.mjs && node night.test.mjs && node day.test.mjs && node tm.test.mjs && node checks.test.mjs && node seed.test.mjs"
+    "test": "node fence.test.mjs && node night.test.mjs && node day.test.mjs && node tm.test.mjs && node checks.test.mjs && node seed.test.mjs && node memshape.test.mjs && node --test cleanup.test.mjs progress.test.mjs opening.test.mjs load.test.mjs",
+    "cleanup": "node cleanup.mjs",
+    "cleanup:apply": "node cleanup.mjs --apply"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "0.3.285",

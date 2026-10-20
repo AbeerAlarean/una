@@ -336,9 +336,14 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
 .bl-row.focus .t{font-weight:600}
 @media (max-width:600px){.backlog{right:10px;width:min(340px,calc(100vw - 20px));bottom:12px}}
 
-.modelpick{height:26px;border:1px solid var(--rule);border-radius:13px;background:none;color:var(--ink-3);font-family:var(--sans);font-size:12.5px;padding:0 8px;cursor:pointer}
+/* same pill as .tmpill / .pintoggle; native arrow replaced by an inline chevron so it sits inside the pill */
+.modelpick{-webkit-appearance:none;-moz-appearance:none;appearance:none;height:26px;line-height:24px;border:1px solid var(--rule);border-radius:13px;color:var(--ink-3);font-family:var(--sans);font-size:12.5px;padding:0 28px 0 11px;cursor:pointer;white-space:nowrap;
+  background-color:transparent;background-repeat:no-repeat;background-position:right 10px center;background-size:10px 6px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%2369655e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1l4 4 4-4'/></svg>")}
 .modelpick:hover,.modelpick:focus{color:var(--ink);border-color:var(--ink-4);outline:none}
-.modelpick option{color:#222}
+.modelpick option{color:#222;background:#fff}
+:root[data-theme="dark"] .modelpick{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%23939089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1l4 4 4-4'/></svg>")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .modelpick{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%23939089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1l4 4 4-4'/></svg>")}}
 
 .tmwrap{position:relative}
 .tmpill{display:flex;align-items:center;gap:6px;height:26px;border:1px solid var(--rule);border-radius:13px;background:none;color:var(--ink-3);font-family:var(--sans);font-size:12.5px;padding:0 10px;cursor:pointer;white-space:nowrap}
@@ -583,7 +588,7 @@ const pinToggle = document.getElementById('pinToggle');
 function openPins(on){ pinsEl.classList.toggle('open', on); document.body.classList.toggle('pinsopen', on); try{ localStorage.setItem('sahar.pinsOpen', on?'1':'0'); }catch(e){} }
 pinToggle.addEventListener('click', ()=>{ const on=!pinsEl.classList.contains('open'); if(on) openBacklog(false); openPins(on); });
 document.getElementById('pinClose').addEventListener('click', ()=>openPins(false));
-document.getElementById('pinClear').addEventListener('click', ()=>{ if(loadPins().length && window.confirm('Unpin everything?')) savePins([]); });
+document.getElementById('pinClear').addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); if(loadPins().length && window.confirm('Unpin everything?')){ savePins([]); openPins(true); } });
 function renderPins(){
   const pins = loadPins();
   pinToggle.textContent = pins.length ? `Pinned · ${pins.length}` : 'Pinned';
@@ -654,7 +659,7 @@ async function addFiles(fileList){
     pendingFiles.push(entry); renderChips();
     try{
       const res = await fetch('/upload', { method:'POST', headers:{ 'Content-Type': entry.type, 'X-File-Name': encodeURIComponent(label) }, body: file });
-      if(!res.ok) throw new Error(res.status === 413 ? 'too large (over 25 MB)' : `upload failed (${res.status})`);
+      if(!res.ok) throw new Error(res.status === 413 ? 'too large (max 25 MB)' : `upload failed (${res.status})`);
       const saved = await res.json();
       entry.name = saved.name; entry.uploading = false;
     }catch(e){

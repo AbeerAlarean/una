@@ -1,6 +1,8 @@
 // Seeds and re-syncs Sahar's mind (the hub's own notes) into the person's TrueMemory mind (TM_MIND_ID, else the mind named "Sahar").
-//   npm run seed             dry run: prints the plan and writes mind/tm-seed-plan.md
-//   npm run seed:apply       uploads (idempotent: unchanged files skip, changed files are replaced)
+// decisions.md is NOT sent as memory any more: decisions reach TrueMemory only through remember() in the one shape
+// (Project · Feature: what. Why: why. (Month YYYY)); see memshape.mjs.
+//   npm run seed          dry run: prints the plan and writes mind/tm-seed-plan.md
+//   npm run seed:apply    uploads (idempotent: unchanged files skip, changed files are replaced)
 // The pure helpers below are tested without network (seed.test.mjs).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -131,15 +133,13 @@ function readDecisions(hub) {
   try { return splitDecisions(fs.readFileSync(path.join(hub, 'mind', 'decisions.md'), 'utf8')); } catch { return []; }
 }
 
-/** The plan: what an apply would do, without touching the network. */
+/** The plan: what an apply would do, without touching the network. Decisions are counted for information only; they are never sent. */
 export function buildPlan(hub = HUB) {
   const map = loadMap(hub);
   const sources = readSources(hub);
   const files = diffSync(sources, map);
   const entries = readDecisions(hub);
-  const fresh = newDecisionEntries(entries, map.decisions?.hashes);
-  const episodes = fresh.flatMap((e) => episodesOf(e));
-  return { files, decisions: { total: entries.length, fresh: fresh.length, episodes: episodes.length, batches: chunkEpisodes(episodes).length, lastEntryDate: lastEntryDate(entries) }, _fresh: fresh, _entries: entries };
+  return { files, decisions: { total: entries.length, fresh: 0, episodes: 0, batches: 0, lastEntryDate: lastEntryDate(entries), retired: true }, _fresh: [], _entries: entries };
 }
 
 export function planMarkdown(plan, applied = false) {
@@ -158,9 +158,9 @@ export function planMarkdown(plan, applied = false) {
     ...f.skipped.map((x) => `- SKIPPED: \`${x.name}\` ← ${x.rel} (${kb(x.bytes)}, ${x.why})`),
     '',
     `## Memories (decisions.md)`,
-    `- ${plan.decisions.total} dated entries found, ${plan.decisions.fresh} not yet in TrueMemory → ${plan.decisions.episodes} memory documents in ${plan.decisions.batches} bulk call(s). Latest entry date: ${plan.decisions.lastEntryDate || 'n/a'}.`,
+    `- Not synced: decisions.md (${plan.decisions.total} entries, latest ${plan.decisions.lastEntryDate || 'n/a'}) is no longer sent as raw memory. Decisions reach TrueMemory only through remember(), in the one shape.`,
     '',
-    'Run `npm run seed:apply` to upload. Re-running is safe: unchanged files and already-sent entries are skipped.',
+    'Run `npm run seed:apply` to upload. Re-running is safe: unchanged files are skipped.',
     '',
   ].join('\n');
 }
@@ -206,35 +206,6 @@ export function applySync({ hub = HUB, log = () => {} } = {}) {
           log(`${kind} ${f.name} FAILED: ${tm.friendlyError(err)}`);
         }
       }
-    }
-    if (plan._fresh.length) {
-      const sent = [];
-      const texts = [];
-      const owners = [];
-      plan._fresh.forEach((e) => episodesOf(e).forEach((t) => { texts.push(t); owners.push(e); }));
-      let i = 0;
-      for (const batch of chunkEpisodes(texts)) {
-        const batchOwners = new Set(owners.slice(i, i + batch.length));
-        i += batch.length;
-        try {
-          await tm.addMemoriesBulk(batch);
-          result.memories += batch.length;
-          batchOwners.forEach((e) => sent.push(e));
-          log(`memories batch of ${batch.length} ok`);
-        } catch (err) {
-          result.errors.push({ item: `memories batch (${batch.length})`, error: tm.friendlyError(err) });
-          log(`memories batch FAILED: ${tm.friendlyError(err)}`);
-          break; // keep order; the next run resumes from the unsent entries
-        }
-      }
-      const map = loadMap(hub);
-      const hashes = [...new Set([...(map.decisions?.hashes || []), ...sent.map((e) => e.hash)])];
-      map.decisions = { count: hashes.length, lastEntryDate: lastEntryDate(plan._entries), hashes };
-      saveMap(map, hub);
-    } else if (!loadMap(hub).decisions) {
-      const map = loadMap(hub);
-      map.decisions = { count: 0, lastEntryDate: lastEntryDate(plan._entries), hashes: [] };
-      saveMap(map, hub);
     }
     result.packIds = Object.keys(loadMap(hub)).filter((k) => k !== 'decisions').length;
     return result;

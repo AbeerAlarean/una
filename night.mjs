@@ -212,3 +212,24 @@ export function wrapDecision({ now, lastUserAt, lastWrapDate, wrapHour = 18.5, t
   if (workers > 0) return { wrap: false, reason: 'workers running' };
   return { wrap: true, reason: 'end of day' };
 }
+
+// ── rotation: only when truly idle (pure, tested in night.test.mjs) ───────────
+export const ROTATE_IDLE_MS = 2 * 60 * 1000;
+/** Rotate the hidden conversation only when it is heavy AND idle: no workers, no turn, no unchecked verdict waiting, and quiet for `minIdleMs`. */
+export function rotateDecision({ ctx = 0, windowSize = 0, rotateAt = 0.55, rotateTokens = 160000, workers = 0, turnActive = false, rotating = false, hasConversation = true, unchecked = 0, sinceActivityMs = Infinity, minIdleMs = ROTATE_IDLE_MS }) {
+  const share = windowSize ? ctx / windowSize : 0;
+  if (!hasConversation || rotating) return { rotate: false, reason: 'no live conversation' };
+  if (share < rotateAt && ctx < rotateTokens) return { rotate: false, reason: 'not heavy' };
+  if (turnActive) return { rotate: false, reason: 'mid-turn' };
+  if (workers > 0) return { rotate: false, reason: 'workers running' };
+  if (unchecked > 0) return { rotate: false, reason: 'a worker verdict is waiting' };
+  if (sinceActivityMs < minIdleMs) return { rotate: false, reason: 'not idle long enough' };
+  return { rotate: true, reason: 'heavy and idle' };
+}
+
+// ── morning usage/meetings question: at most once a day, not if answered within a week ──
+export const ASK_EVERY_MS = 7 * DAY;
+export function askDue({ now, answeredAt = 0, askedAt = 0, tz = DAY_TZ }) {
+  if (askedAt && dayKey(askedAt, tz) === dayKey(now, tz)) return false; // never twice in a day; silence is accepted
+  return !answeredAt || now - answeredAt >= ASK_EVERY_MS;
+}
