@@ -15,12 +15,12 @@ import { decideOpening, hubIsEmpty, RESTORE_NOTE } from './opening.mjs';
 import { slugOf, taskOfWorker, uncheckedTasks, overlayVerify, uncheckedNote, matchCard, loadNudge } from './checks.mjs';
 import { parseResetTime, looksLikeLimit, isAway, wakeDecision, capMath, weekWindow, createUsageMeter, dayKey, parseWrapHour, morningDue, wrapDecision, rotateDecision, askDue, DAY_TZ } from './night.mjs';
 
-// Sahar — one continuous conversation about all of a builder's work.
+// una — one continuous conversation about all of a builder's work.
 // She never does the work herself: every task goes to a background worker, so she is
 // never busy and a message is never queued. One long-lived conversation; messages are
 // fed into it the moment they are typed. Nothing here is specific to one person or machine.
 const UI_DIR = path.dirname(fileURLToPath(import.meta.url));
-// Your own Sahar lives next to the code: hub/ is her brain (her notes), data/ is your
+// Your own una lives next to the code: hub/ is her brain (her notes), data/ is your
 // conversation and dropped files. Both are git-ignored; override with HUB_DIR / DATA_DIR.
 const HUB_DIR = process.env.HUB_DIR || path.join(UI_DIR, 'hub');
 const DATA_DIR = process.env.DATA_DIR || path.join(UI_DIR, 'data');
@@ -42,7 +42,7 @@ function ensureHub() {
   copy(TEMPLATE_DIR, HUB_DIR);
 }
 
-/** TrueMemory is required for Sahar: the line she is told about it at First Contact. */
+/** TrueMemory is required for una: the line she is told about it at First Contact. */
 export function tmSetupLine(connected) {
   return connected
     ? 'TrueMemory: connected.'
@@ -92,7 +92,7 @@ const IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/gif', 'image/webp
 const MAX_INLINE_IMAGE_BYTES = 5 * 1024 * 1024;
 
 // ── her voice in this window (behaviour lives in the hub's CLAUDE.md) ─────────
-const SAHAR_STYLE = `You are Sahar, speaking in a visual chat window, not a terminal. The hub's CLAUDE.md is your job description; mind/agreement.md says who you work for and how they like to work. Address the person by the name the agreement gives them.
+const UNA_STYLE = `You are Una, speaking in a visual chat window, not a terminal. The hub's CLAUDE.md is your job description; mind/agreement.md says who you work for and how they like to work. Address the person by the name the agreement gives them.
 
 BLOCKERS AND PUSHES — said straight away, never sat on.
 - The moment anything blocks you (a fence, a missing value, a failed push, a limit), say it in that same reply: what is blocked, and the ONE thing the person must do. Never wait for them to ask.
@@ -136,7 +136,7 @@ YOUR BRAIN (TrueMemory). remember() takes project, feature, what (one short plai
 
 YOUR PROJECT MAP — you look at the person's work holistically, not as a flat list. Keep mind/project-map.json yourself: projects, then the features inside each (one plain line saying what it is for a user and how it contributes to its project), then sub-features nested under their parent feature (shape: projects[{name, what, aliases[], features[{name, what, aliases[], parent|null, status active|shipped|parked}]}]). On First Contact, and whenever you read a repo or a new piece of work appears, place it in the map: find the project, the feature, the sub-feature it belongs under, write what it is and how it contributes, merge trivial ones, and keep it tight. Build it only from the person's real work, never from a fixed or invented list; a new project needs their word. Every memory anchors to the map: it is stored as Project · Parent › Feature, and remember() fills the path in from the map.
 
-PERSONA. If mind/persona.md exists it is the person's own persona (written with them, or from a persona they already keep elsewhere): take its voice rules and things to avoid as your voice. Your name stays Sahar. Where the persona and the agreement disagree, the agreement wins.
+PERSONA. If mind/persona.md exists it is the person's own persona (written with them, or from a persona they already keep elsewhere): take its voice rules and things to avoid as your voice. Your name stays una. Where the persona and the agreement disagree, the agreement wins.
 
 MAIN TASKS ANCHOR EVERYTHING. The person works on a few main tasks at a time (the top-level things they named, in their words — e.g. "Checkout PR", "Search", "Auth migration"). Every feature, fix, question and worker belongs under one of them. Keep them as the "Main tasks" section at the top of mind/workload.md.
 - When asked what's next / where are we / what's pending / status: answer with the main tasks ONLY, one line each — "<main task> — <where it is> · <blocker, or 'no blocker'> · <next>". No sub-items, no questions, no detail unless they ask about one task.
@@ -435,17 +435,17 @@ export function fenceHook(recentUserText, nightBlock, gate) {
         const blocked = blockedBy(cmd);
         if (blocked) return deny(blocked.why);
         const ro = readOnlyBash(cmd);
-        if (!ro.ok) return deny(`Sahar's own commands are read-only looks only: ${ro.why}. Otherwise hand this "Bash" to a worker (Agent tool, in the background)`);
+        if (!ro.ok) return deny(`Una's own commands are read-only looks only: ${ro.why}. Otherwise hand this "Bash" to a worker (Agent tool, in the background)`);
         return {};
       }
       if (!MAIN_ALLOWED.has(input.tool_name)) {
-        return deny(`Sahar never does the work herself — hand "${input.tool_name}" to a worker (Agent tool, in the background)`);
+        return deny(`Una never does the work herself — hand "${input.tool_name}" to a worker (Agent tool, in the background)`);
       }
       if ((input.tool_name === 'Write' || input.tool_name === 'Edit') && !insideHub(input.tool_input?.file_path)) {
-        return deny(`Sahar only writes her own notes, and they live in ${HUB_DIR} (e.g. ${path.join(HUB_DIR, 'mind', 'workload.md')}) — check the path; anything outside it goes to a builder`);
+        return deny(`Una only writes her own notes, and they live in ${HUB_DIR} (e.g. ${path.join(HUB_DIR, 'mind', 'workload.md')}) — check the path; anything outside it goes to a builder`);
       }
       if ((input.tool_name === 'Agent' || input.tool_name === 'Task') && input.tool_input?.run_in_background === false) {
-        return deny('workers run in the background so Sahar stays available — call it again without run_in_background:false');
+        return deny('workers run in the background so una stays available — call it again without run_in_background:false');
       }
       if ((input.tool_name === 'Agent' || input.tool_name === 'Task') && nightBlock?.()) {
         return deny("the night's share of the budget is used — no new workers until the person is back");
@@ -455,7 +455,7 @@ export function fenceHook(recentUserText, nightBlock, gate) {
     }
     const desc = gate?.descOf(input.agent_id) || '';
     const worker = { worker: true, desc };
-    if (MIND_TOOLS.includes(input.tool_name)) return deny('the mind belongs to Sahar herself — a worker reports back and she writes it down', worker);
+    if (MIND_TOOLS.includes(input.tool_name)) return deny('the mind belongs to una herself — a worker reports back and she writes it down', worker);
     if (input.tool_name !== 'Bash') return withModel(input);
     const cmd = String(input.tool_input?.command || '');
     const blocked = blockedBy(cmd);
@@ -536,7 +536,7 @@ function mindBoot(opening = 'normal') {
   const firstContact = opening === 'restore'
     ? 'NOT NEEDED — we have met before; follow the <restore> instruction below instead of a blank-slate First Contact.'
     : spokenBefore
-      ? 'ALREADY HAPPENED in this thread — do not re-introduce yourself or redo it; continue the conversation as the same Sahar. If the agreement is still DRAFT or missing, carry on with what is left of First Contact in passing.'
+      ? 'ALREADY HAPPENED in this thread — do not re-introduce yourself or redo it; continue the conversation as the same una. If the agreement is still DRAFT or missing, carry on with what is left of First Contact in passing.'
       : blank
         ? 'PENDING, BLANK SLATE — you have never met this person and your notes are empty. Follow "First Contact — blank slate" in CLAUDE.md.'
         : 'PENDING — this is the first time you speak in this thread; your notes already describe their world.';
@@ -700,7 +700,7 @@ function loadCheck() {
   const { note } = loadNudge(tasks, knownCards, LOAD_NUDGE_AT);
   if (note) { loadNotes.push(note); console.log('[load] too many open, nudge queued'); }
 }
-const cleanupOn = process.env.SAHAR_CLEANUP !== 'off';
+const cleanupOn = (process.env.UNA_CLEANUP || process.env.SAHAR_CLEANUP) !== 'off';
 const cleanupNotes = []; // short "kept: why" lines, handed to her with the person's next message
 let cleanupBusy = false;
 let cleanupTimer = null;
@@ -838,9 +838,9 @@ function startConversation({ resume } = {}) {
       cwd: HUB_DIR,
       model: MAIN_MODEL,
       ...(resume ? { resume } : {}),
-      systemPrompt: { type: 'preset', preset: 'claude_code', append: SAHAR_STYLE },
-      // The person's own global Claude Code instructions apply (SAHAR_USER_SETTINGS=off skips them).
-      settingSources: process.env.SAHAR_USER_SETTINGS === 'off' ? ['project'] : ['user', 'project'],
+      systemPrompt: { type: 'preset', preset: 'claude_code', append: UNA_STYLE },
+      // The person's own global Claude Code instructions apply (UNA_USER_SETTINGS=off skips them).
+      settingSources: (process.env.UNA_USER_SETTINGS || process.env.SAHAR_USER_SETTINGS) === 'off' ? ['project'] : ['user', 'project'],
       agents: AGENTS,
       permissionMode: 'default',
       canUseTool: async (_name, toolInput) => ({ behavior: 'allow', updatedInput: toolInput }),
@@ -907,7 +907,7 @@ async function consume(q) {
         broadcast({ type: 'worker', ...item });
       }
     } else if (m.type === 'assistant') {
-      if (m.parent_tool_use_id) continue; // a worker's own messages — not Sahar speaking
+      if (m.parent_tool_use_id) continue; // a worker's own messages — not una speaking
       if (!live.turnActive) setBusy(true);
       const u = m.message?.usage;
       if (u) live.lastCtx = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
@@ -1424,6 +1424,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   startNight();
   refreshTmSetup();
   server.listen(PORT, '127.0.0.1', () => {
-    console.log(`Sahar on http://localhost:${PORT} — hub: ${HUB_DIR} — ${MAIN_MODEL} — never busy, workers in the background — rotate at ${Math.round(ROTATE_AT * 100)}% or ${ROTATE_TOKENS} tokens`);
+    console.log(`Una on http://localhost:${PORT} — hub: ${HUB_DIR} — ${MAIN_MODEL} — never busy, workers in the background — rotate at ${Math.round(ROTATE_AT * 100)}% or ${ROTATE_TOKENS} tokens`);
   });
 }

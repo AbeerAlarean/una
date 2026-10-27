@@ -1,10 +1,10 @@
 {
-  "name": "sahar",
+  "name": "una",
   "version": "1.1.0",
   "private": true,
   "license": "MIT",
-  "repository": "github:AbeerAlarean/sahar",
-  "description": "Sahar \u2014 a chief of staff for a builder's work, on your own Claude Code login.",
+  "repository": "github:AbeerAlarean/una",
+  "description": "Una \u2014 a chief of staff for a builder's work, on your own Claude Code login.",
   "type": "module",
   "engines": {
     "node": ">=22"

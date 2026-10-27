@@ -1,4 +1,4 @@
-// Sahar's brain as tools on her main thread: an in-process SDK MCP server named "mind".
+// una's brain as tools on her main thread: an in-process SDK MCP server named "mind".
 import { createSdkMcpServer, tool } from '@anthropic-ai/claude-agent-sdk';
 import { z } from 'zod';
 import * as tm from './tm.mjs';

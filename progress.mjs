@@ -153,7 +153,7 @@ export async function run({ hub, stateFile, log = () => {}, now = Date.now(), fo
       const { writes, next } = diffProgress(tasks, state.tasks, glossary, new Date(now));
       if (writes.length) {
         try {
-          await client.addMemoriesBulk(writes.map((w) => w.text), { sourceDescription: 'Sahar progress' });
+          await client.addMemoriesBulk(writes.map((w) => w.text), { sourceDescription: 'una progress' });
           for (const w of writes) log(`[progress] wrote: ${w.text}`);
           out.memories = writes.length;
           state.tasks = next;

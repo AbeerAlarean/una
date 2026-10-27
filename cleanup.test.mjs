@@ -125,7 +125,7 @@ test('removal runs git remove then prune, deletes the branch only when merged, a
 });
 test('end to end on fixtures: a faked git/gh/lsof decides, --apply removes only the removable one', async () => {
   const docs = fs.mkdtempSync(path.join(os.tmpdir(), 'docs-'));
-  const hub = path.join(docs, 'sahar-hub');
+  const hub = path.join(docs, 'una-hub');
   const repo = path.join(docs, 'proj');
   fs.mkdirSync(path.join(repo, '.git'), { recursive: true });
   fs.mkdirSync(hub, { recursive: true });
@@ -163,11 +163,13 @@ test('end to end on fixtures: a faked git/gh/lsof decides, --apply removes only 
   assert.equal(only.rows.length, 1);
 });
 
-test('code folder: SAHAR_CODE_DIR wins, else beside the hub or the Sahar folder, else ~/Documents', () => {
+test('code folder: UNA_CODE_DIR wins, else beside the hub or the una folder, else ~/Documents', () => {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'code-'));
-  fs.mkdirSync(path.join(d, 'sahar'), { recursive: true });
+  fs.mkdirSync(path.join(d, 'una'), { recursive: true });
+  assert.equal(codeDir({ UNA_CODE_DIR: d }), d);
   assert.equal(codeDir({ SAHAR_CODE_DIR: d }), d);
+  assert.equal(codeDir({ UNA_CODE_DIR: d, SAHAR_CODE_DIR: path.join(d, 'nope') }), d);
   assert.equal(codeDir({ HUB_DIR: path.join(d, 'my-hub') }), d);
-  assert.equal(codeDir({}, { uiDir: path.join(d, 'sahar') }), d);
-  assert.equal(codeDir({ SAHAR_CODE_DIR: path.join(d, 'nope') }), path.join(os.homedir(), 'Documents'));
+  assert.equal(codeDir({}, { uiDir: path.join(d, 'una') }), d);
+  assert.equal(codeDir({ UNA_CODE_DIR: path.join(d, 'nope') }), path.join(os.homedir(), 'Documents'));
 });

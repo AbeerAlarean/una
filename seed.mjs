@@ -1,4 +1,4 @@
-// Seeds and re-syncs Sahar's mind (the hub's own notes) into the person's TrueMemory mind (TM_MIND_ID, else the mind named "Sahar").
+// Seeds and re-syncs una's mind (the hub's own notes) into the person's TrueMemory mind (TM_MIND_ID, else the mind named "una").
 // decisions.md is NOT sent as memory any more: decisions reach TrueMemory only through remember() in the one shape
 // (Project · Feature: what. Why: why. (Month YYYY)); see memshape.mjs.
 //   npm run seed          dry run: prints the plan and writes mind/tm-seed-plan.md
@@ -26,7 +26,7 @@ export function packNames(repoFiles, historyFiles) {
     ...repoFiles.filter((f) => f.endsWith('.md')).sort().map((f) => ({ name: `project-${md(f)}.md`, rel: `mind/repos/${f}` })),
     ...historyFiles.filter((f) => f.endsWith('.md')).sort().map((f) => ({ name: `history-${md(f)}.md`, rel: `history/${f}` })),
     { name: 'how-i-work.md', rel: 'mind/agreement.md' },
-    { name: 'sahar-lessons.md', rel: 'mind/lessons.md' },
+    { name: 'una-lessons.md', rel: 'mind/lessons.md' },
     { name: 'done.md', rel: 'mind/done.md' },
   ];
 }
@@ -149,7 +149,7 @@ export function planMarkdown(plan, applied = false) {
   return [
     `# TrueMemory seed plan${applied ? ' (applied)' : ' (dry run)'}`,
     '',
-    `Generated ${new Date().toISOString()}. Knowledge goes into the "${tm.BRAIN_NAME}" brain of your Sahar mind; memories go to agent "${tm.AGENT_ID}" (type document).`,
+    `Generated ${new Date().toISOString()}. Knowledge goes into the "${tm.BRAIN_NAME}" brain of your una mind; memories go to agent "${tm.AGENT_ID}" (type document).`,
     '',
     `## Knowledge packs — ${f.upload.length} to upload, ${f.replace.length} to replace, ${f.unchanged.length} unchanged, ${f.skipped.length} skipped`,
     ...f.upload.map((x) => row(x, 'upload')),

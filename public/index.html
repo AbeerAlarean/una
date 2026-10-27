@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sahar</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 1 C36 21 43 28 63 32 C43 36 36 43 32 63 C28 43 21 36 1 32 C21 28 28 21 32 1Z' fill='%23dd8a26'/%3E%3Cpath d='M32 17 C34 27 37 30 47 32 C37 34 34 37 32 47 C30 37 27 34 17 32 C27 30 30 27 32 17Z' fill='%23ffe3b0'/%3E%3C/svg%3E">
+<title>una</title>
+<link rel="icon" type="image/svg+xml" sizes="32x32" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%22-2.96%202.83%20105.92%20105.92%22%20width=%2232%22%20height=%2232%22%3E%3Crect%20x=%22-2.96%22%20y=%222.83%22%20width=%22105.92%22%20height=%22105.92%22%20rx=%2223.3%22%20fill=%22%230F0D18%22/%3E%3Cpath%20d=%22M18%2050L18%2044A32%2032%200%200%201%2082%2044A10.5%2010.5%200%200%201%2071.5%2054.5L39.5%2054.5A10.5%2010.5%200%200%200%2029%2065L29%2089.1C29%20103.06%2050%20103.06%2050%2089.1L50%2077C50%2063.03%2071%2063.03%2071%2077L71%2099%22%20fill=%22none%22%20stroke=%22%23B4A8FF%22%20stroke-width=%227%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" sizes="16x16" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%22-7.57%201.43%20115.15%20115.15%22%20width=%2216%22%20height=%2216%22%3E%3Crect%20x=%22-7.57%22%20y=%221.43%22%20width=%22115.15%22%20height=%22115.15%22%20rx=%2225.33%22%20fill=%22%230F0D18%22/%3E%3Cpath%20d=%22M18%2050L18%2044A32%2032%200%200%201%2082%2044A13%2013%200%200%201%2069%2057L37%2057A13%2013%200%200%200%2024%2070L24%2093.03C24%20110.33%2050%20110.33%2050%2093.03L50%2083.8C50%2066.51%2076%2066.51%2076%2083.8L76%20100.6%22%20fill=%22none%22%20stroke=%22%23B4A8FF%22%20stroke-width=%228.8%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,300..600&family=Instrument+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -13,6 +14,7 @@
   --ink:#2a2825; --ink-2:#45423d; --ink-3:#69655e; --ink-4:#928d85;
   --rule:rgba(28,27,25,.12); --rule-soft:rgba(28,27,25,.07);
   --garnet:#b0283d; --garnet-soft:rgba(176,40,61,.08);
+  --violet:#4E33C4; --violet-soft:rgba(78,51,196,.10);
   --moss:#3f7a3a; --moss-soft:rgba(63,122,58,.10); --olive:#6d7f38; --olive-soft:rgba(109,127,56,.12); --amber:#a86a12; --amber-soft:rgba(168,106,18,.12);
   --serif:'Source Serif 4',Georgia,serif; --sans:'Instrument Sans',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
@@ -74,7 +76,7 @@ body::after{content:none;display:none;position:fixed;inset:-20% -10% auto -10%;h
 .row:focus-visible{outline:1.5px solid var(--ink-3);outline-offset:2px;border-radius:4px}
 .row .nm{font-family:var(--serif);font-size:17px;line-height:1.3;font-weight:400;color:var(--ink);font-variation-settings:'opsz' 18;min-width:0;overflow-wrap:anywhere}
 .row .st{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap;text-align:right}
-.row.needs .st{color:var(--garnet)}
+.row.needs .st{color:var(--violet)}
 .row.needs .nm{font-weight:500}
 .row .nx{grid-column:2/4;font-family:var(--sans);font-size:13px;color:var(--ink-3);margin-top:-6px;display:none}
 .row.open .nx{display:block}
@@ -122,7 +124,6 @@ body::after{content:none;display:none;position:fixed;inset:-20% -10% auto -10%;h
 .drop{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:var(--scrim);border:2px dashed var(--ink-4);font-family:var(--serif);font-size:22px;color:var(--ink-2)}
 .drop.on{display:flex}
 .mast .name{display:flex;align-items:center;gap:9px}
-.mast .star{width:20px;height:20px;flex:none}
 /* ═══ pins — the latest answer per topic, always one click away ═══ */
 .msg.tally{position:relative}
 .pinbtn{position:absolute;top:-6px;right:-34px;width:26px;height:26px;border-radius:50%;border:1px solid var(--rule);background:var(--paper);color:var(--ink-3);cursor:pointer;opacity:0;transition:opacity .15s;display:flex;align-items:center;justify-content:center}
@@ -191,11 +192,13 @@ body::after{content:none;display:none;position:fixed;inset:-20% -10% auto -10%;h
   --ink:#d9d7d2; --ink-2:#bdbab4; --ink-3:#939089; --ink-4:#6c6a65;
   --rule:rgba(255,255,255,.10); --rule-soft:rgba(255,255,255,.06);
   --garnet:#e07b8b; --garnet-soft:rgba(224,123,139,.14);
+  --violet:#B4A8FF; --violet-soft:rgba(180,168,255,.16);
   --moss:#8dbb7c; --moss-soft:rgba(141,187,124,.14); --olive:#a9b874; --olive-soft:rgba(169,184,116,.13); --amber:#e2a54e; --amber-soft:rgba(226,165,78,.14);}}
 :root[data-theme="dark"]{--paper:#161719; --paper-2:#222326; --paper-3:#2e2f33; --card:#1d1e21; --panel:#1a1b1d; --scrim:rgba(22,23,25,.9); --hover:rgba(255,255,255,.035); --shadow:0 10px 30px rgba(0,0,0,.35); --invert:#d9d7d2; --on-invert:#161719;
   --ink:#d9d7d2; --ink-2:#bdbab4; --ink-3:#939089; --ink-4:#6c6a65;
   --rule:rgba(255,255,255,.10); --rule-soft:rgba(255,255,255,.06);
   --garnet:#e07b8b; --garnet-soft:rgba(224,123,139,.14);
+  --violet:#B4A8FF; --violet-soft:rgba(180,168,255,.16);
   --moss:#8dbb7c; --moss-soft:rgba(141,187,124,.14); --olive:#a9b874; --olive-soft:rgba(169,184,116,.13); --amber:#e2a54e; --amber-soft:rgba(226,165,78,.14);}
 body{background:var(--paper);color:var(--ink);transition:background .2s,color .2s}
 .tally pre,.tally code,.chip{background:var(--paper-2)}
@@ -273,9 +276,9 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
 .task .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--ink-4)}
 .task.moving .dot{background:var(--moss)}
 .task.run .dot{background:var(--moss);animation:beat2 1.6s infinite}
-.task.needs .dot,.task.blocked .dot{background:var(--garnet)}
+.task.needs .dot,.task.blocked .dot{background:var(--violet)}
 .task .sig{flex:none;font-size:12px;font-weight:600;line-height:1;padding:3px 8px;border-radius:999px;white-space:nowrap}
-.task .sig.needs,.task .sig.blocked{color:var(--garnet);background:var(--garnet-soft)}
+.task .sig.needs,.task .sig.blocked{color:var(--violet);background:var(--violet-soft)}
 .task .sig.verify{color:var(--amber);background:var(--amber-soft)}
 .task .sig.safe{color:var(--moss);background:var(--moss-soft)}
 .task .tl{display:flex;align-items:center;gap:8px;padding-left:16px;min-height:21px;font-family:var(--sans);font-size:13px;line-height:1.4;color:var(--ink-3)}
@@ -291,7 +294,7 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
 .taskbar .mini i{width:8px;height:8px;border-radius:50%;background:var(--ink-4);cursor:pointer;transition:transform .15s,opacity .15s}
 .taskbar .mini i.run{background:var(--moss);animation:beat2 1.6s infinite}
 .taskbar .mini i.moving{background:var(--moss)}
-.taskbar .mini i.needs,.taskbar .mini i.blocked{background:var(--garnet)}
+.taskbar .mini i.needs,.taskbar .mini i.blocked{background:var(--violet)}
 .taskbar .mini i.out{opacity:.35}
 .taskbar .mini i.in{transform:scale(1.15)}
 @media (max-width:700px){
@@ -332,7 +335,7 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
 .bl-row .wait{display:inline-flex;align-items:center;border-radius:10px;padding:2px 7px;background:var(--paper-2);color:var(--ink-3);font-weight:600}
 .bl-row .wait.waiting{background:var(--amber-soft);color:var(--amber)}
 .bl-row .wait.hold{background:var(--paper-2);color:var(--ink-3)}
-.bl-row .wait.you{background:var(--garnet-soft);color:var(--garnet)}
+.bl-row .wait.you{background:var(--violet-soft);color:var(--violet)}
 .bl-row.focus .t{font-weight:600}
 @media (max-width:600px){.backlog{right:10px;width:min(340px,calc(100vw - 20px));bottom:12px}}
 
@@ -367,12 +370,49 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
 .tmpop ul{list-style:none;margin:8px 0 0;padding:0}
 .tmpop li{padding:3px 0;line-height:1.35;border-top:1px solid var(--rule-soft)}
 .tmpop li .ok{color:var(--moss)} .tmpop li .bad{color:var(--garnet)}
+/* una mark states. Colour comes from currentColor; --sm-accent is the "needs you" thread
+   (violet #4E33C4 on light, #B4A8FF on dark). */
+.una-mark{--sm-accent:#4E33C4;overflow:visible}
+@media (prefers-color-scheme:dark){.una-mark{--sm-accent:#B4A8FF}}
+:root[data-theme="dark"] .una-mark{--sm-accent:#B4A8FF}
+:root[data-theme="light"] .una-mark{--sm-accent:#4E33C4}
+
+.una-mark .sm-ghost{opacity:0}
+.una-mark .sm-draw{stroke-dasharray:1 1;stroke-dashoffset:0}
+.una-mark .sm-tail{opacity:0;stroke:var(--sm-accent)}
+
+/* WORKING: the single line draws itself, 4.8s loop */
+.una-mark[data-state="working"] .sm-ghost{opacity:.14}
+.una-mark[data-state="working"] .sm-draw{stroke-dashoffset:1}
+
+/* NEEDS YOU: body dims, the free thread lights in violet */
+.una-mark[data-state="needs"] .sm-draw{opacity:.55}
+.una-mark[data-state="needs"] .sm-tail{opacity:1}
+
+@media (prefers-reduced-motion:no-preference){
+  .una-mark[data-state="working"] .sm-draw{animation:sm-draw 4.8s cubic-bezier(.45,0,.25,1) infinite}
+  .una-mark[data-state="idle"] .sm-body{transform-origin:50% 40%;animation:sm-breath 6s ease-in-out infinite}
+  .una-mark[data-state="needs"] .sm-tail{animation:sm-call 2.4s ease-in-out infinite}
+}
+/* reduced motion: working shows the full line, idle is still, needs shows the lit thread (static) */
+@media (prefers-reduced-motion:reduce){
+  .una-mark[data-state="working"] .sm-draw{stroke-dashoffset:0}
+}
+@keyframes sm-draw{0%{stroke-dashoffset:1}50%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+@keyframes sm-breath{0%,100%{transform:scale(1);opacity:.82}50%{transform:scale(1.03);opacity:1}}
+@keyframes sm-call{0%,100%{opacity:.55}50%{opacity:1}}
+
+/* ═══ the mark — one line, status in the masthead ═══ */
+.una-mark .sm-body{transform-box:fill-box}
+/* the lockup: mark + lettered una, one ink; violet only on the needs-you thread */
+.mast .una-mark{height:58px;width:auto;flex:none;color:var(--ink)}
+@media (max-width:600px){.mast .una-mark{height:38px}}
 </style>
 </head>
 <body>
   <div class="mast">
-    <div class="name"><svg class='star' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 1 C36 21 43 28 63 32 C43 36 36 43 32 63 C28 43 21 36 1 32 C21 28 28 21 32 1Z' fill='#dd8a26'/><path d='M32 17 C34 27 37 30 47 32 C37 34 34 37 32 47 C30 37 27 34 17 32 C27 30 30 27 32 17Z' fill='#ffe3b0'/></svg>Sahar</div>
-    <div class="r"><div class="tmwrap"><button class="tmpill" id="tmPill" type="button" aria-haspopup="true" aria-expanded="false"><span class="dot"></span><span id="tmLabel">Connect TrueMemory</span></button><div class="tmpop" id="tmPop" role="dialog" aria-label="TrueMemory"></div></div><select class="modelpick" id="modelPick" aria-label="Model Sahar thinks on" title="Model Sahar thinks on"></select><button class="themebtn" id="themeBtn" aria-label="Switch light or dark"></button><button class="pintoggle" id="pinToggle" aria-controls="pins">Pinned</button><div class="time" id="time"></div></div>
+    <div class="name"><svg class="una-mark" id="unaMark" data-state="idle" role="img" aria-label="una" xmlns="http://www.w3.org/2000/svg" viewBox="13 7 212.1 108.4" fill="none" stroke="currentColor" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"><g class="sm-body"><path class="sm-ghost" d="M18 50L18 44A32 32 0 0 1 82 44A8 8 0 0 1 74 52L42 52A8 8 0 0 0 34 60L34 92.4C34 103.04 50 103.04 50 92.4L50 70.4C50 59.76 66 59.76 66 70.4L66 110.4"/><path class="sm-draw" pathLength="1" d="M18 50L18 44A32 32 0 0 1 82 44A8 8 0 0 1 74 52L42 52A8 8 0 0 0 34 60L34 92.4C34 103.04 50 103.04 50 92.4L50 70.4C50 59.76 66 59.76 66 70.4L66 110.4"/><path class="sm-tail" d="M66 70.4L66 110.4"/></g><g class="sm-word"><path d="M107.4 12L107.4 39A13 13 0 0 0 133.4 39L133.4 12"/><path d="M151.4 52L151.4 25A13 13 0 0 1 177.4 25L177.4 52"/><path d="M220.4 25A13 13 0 0 0 194.4 25L194.4 39A13 13 0 0 0 220.4 39"/><path d="M220.4 12L220.4 52"/></g></svg></div>
+    <div class="r"><div class="tmwrap"><button class="tmpill" id="tmPill" type="button" aria-haspopup="true" aria-expanded="false"><span class="dot"></span><span id="tmLabel">Connect TrueMemory</span></button><div class="tmpop" id="tmPop" role="dialog" aria-label="TrueMemory"></div></div><select class="modelpick" id="modelPick" aria-label="Model una thinks on" title="Model una thinks on"></select><button class="themebtn" id="themeBtn" aria-label="Switch light or dark"></button><button class="pintoggle" id="pinToggle" aria-controls="pins">Pinned</button><div class="time" id="time"></div></div>
   </div>
   <aside class="pins" id="pins" aria-label="Pinned answers">
     <header><b>Pinned</b><span class="ph-r"><button id="pinClear" class="pinclear" type="button">Clear all</button><button id="pinClose" aria-label="Close pinned">×</button></span></header>
@@ -390,7 +430,7 @@ body{background:var(--paper);color:var(--ink);transition:background .2s,color .2
   <div class="inputbar">
     <div class="chips" id="chips"></div>
     <div class="input-in">
-      <div class="field"><textarea id="input" rows="1" placeholder="Say it…" autofocus aria-label="Message Sahar"></textarea></div>
+      <div class="field"><textarea id="input" rows="1" placeholder="Say it…" autofocus aria-label="Message una"></textarea></div>
       <button class="micbtn" id="micBtn" type="button" aria-label="Start voice input" title="Start voice input" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg></button>
       <button class="sendbtn" id="sendBtn" title="Send" aria-label="Send">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
@@ -453,7 +493,7 @@ function glyph(state, needs){
     else if(s.includes('plan')||s.includes('approved')||s.includes('next')) s='planned';
     else s='preparing';
   }
-  const color = needs ? 'var(--garnet)' : (s==='building' ? 'var(--moss)' : 'var(--ink-3)');
+  const color = needs ? 'var(--violet)' : (s==='building' ? 'var(--moss)' : 'var(--ink-3)');
   return `<svg class="g" viewBox="0 0 14 14" style="color:${color}" aria-hidden="true">${GLYPH[s]}</svg>`;
 }
 
@@ -488,7 +528,7 @@ function chapterHtml(jsonText){
   }).join('');
 }
 
-// Sahar message: prose + chapters, in order
+// una message: prose + chapters, in order
 function tallyHtml(text){
   let html = '';
   const re = /```(?:workload|cards)\s*([\s\S]*?)```/g;
@@ -527,7 +567,7 @@ function addUser(text, attachments, fromYou, remember=false){
   thread.appendChild(d); scrollDown();
 }
 let currentModel = '';
-function addSahar(text, model){
+function addUna(text, model){
   const d = document.createElement('div');
   d.className = 'msg tally';
   const chip = (model||currentModel) ? `<span class="model">${esc(model||currentModel)}</span>` : '';
@@ -550,7 +590,7 @@ function addSahar(text, model){
 
 // ── pins: kept in this browser; one pin per topic, updated with the latest answer ──
 const PIN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2.5 3.24H6.5z"/><path d="M8 3h8"/></svg>';
-const PIN_STORE = 'sahar.pins';
+const PIN_STORE = 'una.pins';
 function loadPins(){ try{ return JSON.parse(localStorage.getItem(PIN_STORE)||'[]'); }catch(e){ return []; } }
 function savePins(p){ try{ localStorage.setItem(PIN_STORE, JSON.stringify(p)); }catch(e){} renderPins(); }
 function textKey(t){ let h=0; for(let i=0;i<t.length;i++){ h=(h*31+t.charCodeAt(i))|0; } return 'k'+(h>>>0).toString(36)+t.length; }
@@ -585,7 +625,7 @@ function openPinMenu(msgEl, anchor, text){
 document.addEventListener('click', closePinMenu);
 const pinsEl = document.getElementById('pins');
 const pinToggle = document.getElementById('pinToggle');
-function openPins(on){ pinsEl.classList.toggle('open', on); document.body.classList.toggle('pinsopen', on); try{ localStorage.setItem('sahar.pinsOpen', on?'1':'0'); }catch(e){} }
+function openPins(on){ pinsEl.classList.toggle('open', on); document.body.classList.toggle('pinsopen', on); try{ localStorage.setItem('una.pinsOpen', on?'1':'0'); }catch(e){} }
 pinToggle.addEventListener('click', ()=>{ const on=!pinsEl.classList.contains('open'); if(on) openBacklog(false); openPins(on); });
 document.getElementById('pinClose').addEventListener('click', ()=>openPins(false));
 document.getElementById('pinClear').addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); if(loadPins().length && window.confirm('Unpin everything?')){ savePins([]); openPins(true); } });
@@ -614,7 +654,7 @@ function renderPins(){
   });
 }
 renderPins();
-try{ if(localStorage.getItem('sahar.pinsOpen')==='1' && window.innerWidth>=1180) openPins(true); }catch(e){}
+try{ if(localStorage.getItem('una.pinsOpen')==='1' && window.innerWidth>=1180) openPins(true); }catch(e){}
 function addWorker(w){
   const d = document.createElement('div');
   d.className = 'msg worker';
@@ -633,8 +673,10 @@ function showBreath(){
 }
 function hideBreath(){if(breathEl){breathEl.remove();breathEl=null}}
 function setAct(t){if(t){act.textContent=t;act.classList.add('on')}else act.classList.remove('on')}
-let busy=false, workers=0;
-function refreshAct(){ setAct(busy ? null : (workers ? `${workers} worker${workers===1?'':'s'} running` : null)); }
+let busy=false, workers=0, needsCount=0;
+const markEl = document.getElementById('unaMark');
+function paintMark(){ markEl.dataset.state = needsCount ? 'needs' : (busy || workers) ? 'working' : 'idle'; }
+function refreshAct(){ setAct(busy ? null : (workers ? `${workers} worker${workers===1?'':'s'} running` : null)); paintMark(); }
 function setBusy(b){ busy=b; if(b) showBreath(); else hideBreath(); refreshAct(); }
 function autoGrow(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,160)+'px'}
 
@@ -664,7 +706,7 @@ async function addFiles(fileList){
       entry.name = saved.name; entry.uploading = false;
     }catch(e){
       pendingFiles = pendingFiles.filter(f => f !== entry);
-      addSahar(`Couldn't take "${label}" — ${e.message}.`);
+      addUna(`Couldn't take "${label}" — ${e.message}.`);
     }
     renderChips();
   }
@@ -747,9 +789,9 @@ async function send(text, hidden){
   if(!hidden){ input.value=''; input.style.height='auto'; pendingFiles = []; renderChips(); jumpDown(); }
   try{
     const res = await fetch('/message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text, hidden:!!hidden, attachments})});
-    if(!res.ok) addSahar('That didn\'t reach me — try again.');
+    if(!res.ok) addUna('That didn\'t reach me — try again.');
   }catch(e){
-    addSahar('Lost the connection — the server may be down. Saying it loud, not a quiet day.');
+    addUna('Lost the connection — the server may be down. Saying it loud, not a quiet day.');
   }
 }
 
@@ -791,15 +833,15 @@ function positionBacklog(){
   backlogEl.style.top=`${top}px`;
 }
 window.addEventListener('resize',positionBacklog);
-function openBacklog(on){ backlogEl.classList.toggle('open', on); tasksEl.classList.toggle('show-pending', on); loadBtn.setAttribute('aria-expanded', on?'true':'false'); try{ localStorage.setItem('sahar.blOpen', on?'1':'0'); }catch(e){} }
+function openBacklog(on){ backlogEl.classList.toggle('open', on); tasksEl.classList.toggle('show-pending', on); loadBtn.setAttribute('aria-expanded', on?'true':'false'); try{ localStorage.setItem('una.blOpen', on?'1':'0'); }catch(e){} }
 loadBtn.addEventListener('click', e=>{ e.stopPropagation(); openBacklog(!backlogEl.classList.contains('open')); });
 document.getElementById('blClose').addEventListener('click', ()=>openBacklog(false));
-try{ if(localStorage.getItem('sahar.blOpen')==='1' && window.innerWidth>=1180) openBacklog(true); }catch(e){}
+try{ if(localStorage.getItem('una.blOpen')==='1' && window.innerWidth>=1180) openBacklog(true); }catch(e){}
 
 // ── which model she thinks on — switch to save tokens ──
 const modelPick = document.getElementById('modelPick');
 function paintModels(list, cur){ if(!Array.isArray(list)||!list.length){ modelPick.style.display='none'; return; } modelPick.innerHTML = list.map(o=>`<option value="${esc(o.id)}">${esc(o.label)}</option>`).join(''); if(cur) modelPick.value = cur; }
-modelPick.addEventListener('change', async ()=>{ const id = modelPick.value; try{ const r = await fetch('/model',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:id})}); if(r.ok) addNote(`Sahar now thinks on ${modelPick.selectedOptions[0].textContent}`); }catch(e){} });
+modelPick.addEventListener('change', async ()=>{ const id = modelPick.value; try{ const r = await fetch('/model',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:id})}); if(r.ok) addNote(`una now thinks on ${modelPick.selectedOptions[0].textContent}`); }catch(e){} });
 // ── main tasks, live ──
 // the bar has six steps; each true stage sits on one of them with its own label
 const STAGE_POS = { plan:0, build:1, fix:1, verify:2, ready:2, test:2, pr:3, review:3, checking:4, safe:4, merged:5, done:5, live:5 };
@@ -810,6 +852,7 @@ const PROJ_HUES = [[0,'#c47a2c',''],[0,'#3f7fb5',''],[0,'#7d5bb0',''],[0,'#2f8a7
 function projColor(p){ let h=0; for(const c of p.toLowerCase()) h=(h*31+c.charCodeAt(0))|0; const [,fg,bg]=PROJ_HUES[Math.abs(h)%PROJ_HUES.length]; return `--pc:${fg};--pb:${bg}`; }
 function renderTasks(tasks){
   renderBacklog(tasks);
+  needsCount = Array.isArray(tasks) ? tasks.filter(t=>t.state==='needs-you'||t.state==='blocked').length : 0; paintMark();
   if(Array.isArray(tasks)) tasks = tasks.filter(t=>t.focus!==false);
   const el = document.getElementById('tasksIn');
   const box = document.getElementById('tasks');
@@ -867,8 +910,8 @@ const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wi
 const themeBtn=document.getElementById('themeBtn');
 function isDark(){ const t=document.documentElement.dataset.theme; return t ? t==='dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
 function paintThemeBtn(){ themeBtn.innerHTML = isDark() ? SUN : MOON; themeBtn.title = isDark() ? 'Light theme' : 'Dark theme'; }
-try{ const saved=localStorage.getItem('sahar.theme'); if(saved) document.documentElement.dataset.theme=saved; }catch(e){}
-themeBtn.addEventListener('click',()=>{ const next=isDark()?'light':'dark'; document.documentElement.dataset.theme=next; try{localStorage.setItem('sahar.theme',next);}catch(e){} paintThemeBtn(); });
+try{ const saved=localStorage.getItem('una.theme'); if(saved) document.documentElement.dataset.theme=saved; }catch(e){}
+themeBtn.addEventListener('click',()=>{ const next=isDark()?'light':'dark'; document.documentElement.dataset.theme=next; try{localStorage.setItem('una.theme',next);}catch(e){} paintThemeBtn(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paintThemeBtn);
 paintThemeBtn();
 
@@ -879,12 +922,12 @@ function setStrip(mode){ // 'open' | 'collapsed'
   tasksBox.classList.toggle('collapsed', mode==='collapsed');
   taskPin.classList.toggle('on', mode==='open'); taskPin.setAttribute('aria-pressed', mode==='open');
   taskChev.setAttribute('aria-expanded', mode==='open');
-  try{ localStorage.setItem('sahar.strip', mode); }catch(e){}
+  try{ localStorage.setItem('una.strip', mode); }catch(e){}
   requestAnimationFrame(positionBacklog);
 }
 taskChev.addEventListener('click',()=>{ setStrip(tasksBox.classList.contains('collapsed')?'open':'collapsed'); taskChev.blur(); });
 taskPin.addEventListener('click',()=>{ setStrip(tasksBox.classList.contains('collapsed')?'open':'collapsed'); taskPin.blur(); });
-try{ setStrip(localStorage.getItem('sahar.strip')||'open'); }catch(e){ setStrip('open'); }
+try{ setStrip(localStorage.getItem('una.strip')||'open'); }catch(e){ setStrip('open'); }
 
 
 // ── carousel: arrows + which dots are on screen ──
@@ -915,7 +958,7 @@ function connect(){
     else if(m.type==='tasks'){ renderTasks(m.tasks); }
     else if(m.type==='note'){ addNote(m.text); }
     else if(m.type==='user'){ addUser(m.text, m.attachments); }
-    else if(m.type==='text'){ hideBreath(); addSahar(m.text, m.model); if(busy) showBreath(); }
+    else if(m.type==='text'){ hideBreath(); addUna(m.text, m.model); if(busy) showBreath(); }
     else if(m.type==='status'){ if(busy) setAct(m.text); }
     else if(m.type==='model'){ currentModel=m.model; if(m.id) modelPick.value=m.id; }
     else if(m.type==='worker'){ hideBreath(); addWorker(m); if(busy) showBreath(); }
@@ -931,7 +974,7 @@ async function boot(){
   try{ items = await (await fetch('/thread')).json(); }catch(e){}
   for(const it of items){
     if(it.kind==='user') addUser(it.text, it.attachments, false, true);
-    else if(it.kind==='tally') addSahar(it.text, it.model);
+    else if(it.kind==='tally') addUna(it.text, it.model);
     else if(it.kind==='worker') addWorker(it);
     else if(it.kind==='note') addNote(it.text);
   }
@@ -965,7 +1008,7 @@ async function tmSubmit(e){
   e.preventDefault();
   const email=document.getElementById('tmEmail').value, pw=document.getElementById('tmPass');
   const err=document.getElementById('tmErr'); err.textContent='Connecting…';
-  let r; try{ r = await (await fetch('/tm/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw.value})})).json(); }catch(x){ r={ok:false,error:"Can't reach Sahar's server."}; }
+  let r; try{ r = await (await fetch('/tm/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw.value})})).json(); }catch(x){ r={ok:false,error:"Can't reach una's server."}; }
   pw.value='';
   if(r.ok){ await tmRefresh(); tmRender(); } else { err.textContent = r.error||'Could not connect.'; }
 }
@@ -973,17 +1016,17 @@ async function tmSetPassword(){
   const email=document.getElementById('tmEmail').value.trim(), err=document.getElementById('tmErr');
   if(!email){ err.textContent='Enter your TrueMemory email above first.'; document.getElementById('tmEmail').focus(); return; }
   err.textContent='Sending…';
-  let r; try{ r = await (await fetch('/tm/set-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})})).json(); }catch(x){ r={ok:false,error:"Can't reach Sahar's server."}; }
+  let r; try{ r = await (await fetch('/tm/set-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})})).json(); }catch(x){ r={ok:false,error:"Can't reach una's server."}; }
   err.textContent = r.ok ? 'Check your inbox for the TrueMemory email, set a password from the link, then connect here.' : (r.error||'Could not send the email.');
 }
 async function tmRunProof(){
   const ul=document.getElementById('tmSteps'); ul.innerHTML='<li>Running… this can take up to two minutes.</li>';
-  let r; try{ r = await (await fetch('/tm/proof',{method:'POST'})).json(); }catch(x){ r={steps:[{step:'proof',ok:false,error:"Can't reach Sahar's server."}]}; }
+  let r; try{ r = await (await fetch('/tm/proof',{method:'POST'})).json(); }catch(x){ r={steps:[{step:'proof',ok:false,error:"Can't reach una's server."}]}; }
   tmState.lastProof=r; tmPaintProof(r);
 }
 function tmPaintProof(r){
   const ul=document.getElementById('tmSteps'); if(!ul) return;
-  const detail=(s)=> !s.ok ? esc(s.error) : s.step==='memory' ? 'written to the sahar space' : s.step==='brain' ? (s.created?'created and added to the mind':'ready in the mind') : s.step==='upload' ? 'uploaded, indexed' : s.step==='consult' ? `note ${s.markerInExcerpts?'found':'NOT found'} in the mind, ${s.memories} memories` : s.step==='search' ? `fact ${s.factFound?'found':'NOT found'} in memories` : 'done';
+  const detail=(s)=> !s.ok ? esc(s.error) : s.step==='memory' ? 'written to the una space' : s.step==='brain' ? (s.created?'created and added to the mind':'ready in the mind') : s.step==='upload' ? 'uploaded, indexed' : s.step==='consult' ? `note ${s.markerInExcerpts?'found':'NOT found'} in the mind, ${s.memories} memories` : s.step==='search' ? `fact ${s.factFound?'found':'NOT found'} in memories` : 'done';
   const when = r.at ? `<li style="opacity:.7">Last proof ${esc(new Date(r.at).toLocaleString())}</li>` : '';
   ul.innerHTML = when + (r.steps||[]).map(s=>`<li><span class="${s.ok?'ok':'bad'}">${s.ok?'✓':'✗'}</span> ${esc(s.step)} — ${detail(s)}</li>`).join('');
 }

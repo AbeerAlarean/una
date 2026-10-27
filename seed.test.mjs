@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { packNames, diffSync, splitDecisions, lastEntryDate, episodesOf, newDecisionEntries, chunkEpisodes, sha256 } from './seed.mjs';
 
 const names = packNames(['api-service.md', 'x.txt'], ['hub.md']);
-assert.deepEqual(names.map((n) => n.name), ['project-api-service.md', 'history-hub.md', 'how-i-work.md', 'sahar-lessons.md', 'done.md']);
+assert.deepEqual(names.map((n) => n.name), ['project-api-service.md', 'history-hub.md', 'how-i-work.md', 'una-lessons.md', 'done.md']);
 assert.equal(names[0].rel, 'mind/repos/api-service.md');
 
 const md = `# Decisions\npreamble\n\n## 2026-10-10 23:55 Their call: A\nbecause B\n\n## api-service\n- rule one\n\n## 2026-10-08/09 Launch week\nwhy\n`;

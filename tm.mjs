@@ -1,15 +1,19 @@
-// TrueMemory client for Sahar (https://truememory.com): signs in AS THE USER (their own ID token as Bearer, no app token).
+// TrueMemory client for una (https://truememory.com): signs in AS THE USER (their own ID token as Bearer, no app token).
 // Only the refresh token is persisted, in the macOS Keychain; the 1h ID token lives in memory.
 import { spawn } from 'node:child_process';
 
 const AUTH_URL = (process.env.TM_AUTH_URL || 'https://auth.truememory.com').replace(/\/+$/, '');
 const API_URL = (process.env.TM_API_URL || 'https://api.truememory.com').replace(/\/+$/, '');
-// The mind Sahar files knowledge in: TM_MIND_ID if set, else the person's own mind named "Sahar"
+// The mind una files knowledge in: TM_MIND_ID if set, else the person's own mind named "una"
 // (found by name, created on first use). Nothing is hardcoded to one account.
-export const MIND_NAME = 'Sahar';
+export const MIND_NAME = 'una';
+// Memory space id kept for continuity; not user-visible. Changing it would orphan existing users' memories.
 export const AGENT_ID = process.env.TM_AGENT_ID || 'sahar';
-export const BRAIN_NAME = 'Sahar notes';
-const KEYCHAIN_SERVICE = 'sahar.truememory';
+export const BRAIN_NAME = 'una notes';
+export const LEGACY_MIND_NAME = 'Sahar'; // existing users' mind and brain keep their old names; used as-is, never renamed
+export const LEGACY_BRAIN_NAME = 'Sahar notes';
+const KEYCHAIN_SERVICE = 'una.truememory';
+const LEGACY_KEYCHAIN_SERVICE = 'sahar.truememory'; // pre-rename name; read once, migrated, then deleted
 const REFRESH_SKEW_MS = 5 * 60 * 1000;
 
 // ── pure helpers (tested without network) ──
@@ -66,16 +70,35 @@ export async function saveRefreshToken(email, token) {
   const r = await run('security', ['add-generic-password', '-U', '-s', KEYCHAIN_SERVICE, '-a', email, '-w', token]);
   if (r.code !== 0) throw new TmError('Could not save the sign-in to the macOS Keychain.');
 }
-export async function loadRefreshToken() {
-  const attrs = await run('security', ['find-generic-password', '-s', KEYCHAIN_SERVICE]);
+/** Read one Keychain service via an injected runner ({code,out}); null when absent. */
+export async function readKeychain(runner, service) {
+  const attrs = await runner('security', ['find-generic-password', '-s', service]);
   if (attrs.code !== 0) return null;
   const m = attrs.out.match(/"acct"<blob>="([^"]*)"/);
-  const pw = await run('security', ['find-generic-password', '-s', KEYCHAIN_SERVICE, '-w']);
+  const pw = await runner('security', ['find-generic-password', '-s', service, '-w']);
   if (pw.code !== 0 || !pw.out.trim()) return null;
   return { email: m ? m[1] : null, token: pw.out.trim() };
 }
+/** Current service first; if missing, fall back to the legacy one and migrate it (write new, delete old). */
+export async function loadWithFallback(runner, save, current = KEYCHAIN_SERVICE, legacy = LEGACY_KEYCHAIN_SERVICE) {
+  const now = await readKeychain(runner, current);
+  if (now) return now;
+  const old = await readKeychain(runner, legacy);
+  if (!old) return null;
+  if (old.email) {
+    try {
+      await save(old.email, old.token);
+      await runner('security', ['delete-generic-password', '-s', legacy]);
+    } catch { /* keep the legacy entry so the user stays connected */ }
+  }
+  return old;
+}
+export async function loadRefreshToken() {
+  return loadWithFallback(run, saveRefreshToken);
+}
 export async function clearRefreshToken() {
   await run('security', ['delete-generic-password', '-s', KEYCHAIN_SERVICE]);
+  await run('security', ['delete-generic-password', '-s', LEGACY_KEYCHAIN_SERVICE]);
 }
 
 // ── session (in memory) ──
@@ -202,10 +225,15 @@ async function me() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** The id of Sahar's mind: TM_MIND_ID, else the person's mind named "Sahar" (created when `create` and missing). */
+/** The mind named "una", else an existing legacy one (used as-is), else null. */
+export function pickMindWithLegacy(list) {
+  return pickMind(list) || pickMind(list, LEGACY_MIND_NAME);
+}
+
+/** The id of una's mind: TM_MIND_ID, else the person's mind named "una" (created when `create` and missing). */
 export async function resolveMind({ create = true } = {}) {
   if (session.mindId) return session.mindId;
-  const found = pickMind(await api('/minds?limit=200'));
+  const found = pickMindWithLegacy(await api('/minds?limit=200'));
   if (found) { session.mindId = found.id; session.mindName = found.name; return found.id; }
   if (!create) return null;
   const made = await api('/minds', { method: 'POST', body: { name: MIND_NAME } });
@@ -219,11 +247,11 @@ export async function resolveMind({ create = true } = {}) {
 export async function ensureBrain() {
   const user = await me();
   const list = await api('/brains?limit=200');
-  const mine = (list?.brains || []).filter((b) => b.name === BRAIN_NAME && (!user?.id || !b.user_id || b.user_id === user.id));
+  const mine = (list?.brains || []).filter((b) => (b.name === BRAIN_NAME || b.name === LEGACY_BRAIN_NAME) && (!user?.id || !b.user_id || b.user_id === user.id));
   let brain = mine[0];
   let created = false;
   if (!brain) {
-    brain = await api('/brains', { method: 'POST', body: { name: BRAIN_NAME, description: "Notes and briefs Sahar keeps for her person." } });
+    brain = await api('/brains', { method: 'POST', body: { name: BRAIN_NAME, description: "Notes and briefs una keeps for her person." } });
     created = true;
   }
   const mid = await resolveMind();
@@ -236,7 +264,7 @@ export async function ensureBrain() {
 export async function addMemory(text) {
   const res = await api('/memories/graph', {
     method: 'POST', timeoutMs: 120000,
-    body: { data: text, type: 'document', agent_id: AGENT_ID, wait: true, source_description: 'Sahar' },
+    body: { data: text, type: 'document', agent_id: AGENT_ID, wait: true, source_description: 'una' },
   });
   if (res?.status === 'completed') return { status: 'completed' };
   if (res?.job_id) {
@@ -283,7 +311,7 @@ export async function deletePack(packId) {
 }
 
 // Bulk route (maintenance lane): ≤50 episodes and ≤700KB serialized per call; always async, so poll the job.
-export async function addMemoriesBulk(texts, { sourceDescription = 'Sahar decisions' } = {}) {
+export async function addMemoriesBulk(texts, { sourceDescription = 'una decisions' } = {}) {
   if (!texts.length) return { episodes: 0 };
   const res = await api('/memories/graph/bulk', {
     method: 'POST', timeoutMs: 60000,
@@ -321,25 +349,25 @@ export async function status() {
   return { connected: true, user: user ? { email: user.email || session.email, name: user.name } : { email: session.email, name: null }, mind: session.mindName || `${MIND_NAME} (created on first use)`, mindId: session.mindId, agentId: AGENT_ID };
 }
 
-// Phase 0 proof: write one memory, upload one note into the Sahar brain, read both back.
+// Phase 0 proof: write one memory, upload one note into the una brain, read both back.
 export async function runProof(now = new Date()) {
   const iso = now.toISOString();
   const stamp = iso.replace(/[:.]/g, '-');
-  const marker = `sahar-proof-${stamp}`;
+  const marker = `una-proof-${stamp}`;
   const steps = [];
   const step = async (name, fn) => {
     try { const d = await fn(); steps.push({ step: name, ok: true, ...d }); return d; }
     catch (err) { steps.push({ step: name, ok: false, error: friendlyError(err) }); return null; }
   };
-  const fact = "The person decided Sahar's brain lives in their TrueMemory: craft in the repo, their world in TrueMemory, live state local.";
+  const fact = "The person decided una's brain lives in their TrueMemory: craft in the repo, their world in TrueMemory, live state local.";
 
-  await step('memory', async () => ({ ...(await addMemory(`Sahar proof ${iso}: ${fact}`)), agent: AGENT_ID }));
+  await step('memory', async () => ({ ...(await addMemory(`Una proof ${iso}: ${fact}`)), agent: AGENT_ID }));
   const brain = await step('brain', ensureBrain);
   await step('upload', async () => {
-    const md = `# Sahar proof note\n\n${marker}\n\nWhere does Sahar's brain live? In the person's TrueMemory: craft stays in the repo, their world lives in TrueMemory, live state stays local.\n`;
+    const md = `# Una proof note\n\n${marker}\n\nWhere does una's brain live? In the person's TrueMemory: craft stays in the repo, their world lives in TrueMemory, live state stays local.\n`;
     return uploadNote(`${marker}.md`, md, { brainId: brain?.brainId });
   });
-  const q = `Where does Sahar's brain live? ${marker}`;
+  const q = `Where does una's brain live? ${marker}`;
   let c = null;
   await step('consult', async () => {
     for (let i = 0; i < 4; i++) {
@@ -350,7 +378,7 @@ export async function runProof(now = new Date()) {
     return { excerpts: (c?.excerpts || []).length, markerInExcerpts: findMarker(c?.excerpts, marker), memories: (c?.memories || []).length, sample: (c?.excerpts || []).slice(0, 2).map((e) => ({ filename: e.filename, content: String(e.content).slice(0, 200) })) };
   });
   await step('search', async () => {
-    const hits = await searchMemories(`Where does Sahar's brain live? TrueMemory`);
+    const hits = await searchMemories(`Where does una's brain live? TrueMemory`);
     const hit = findMarker(hits, 'lives in their TrueMemory');
     return { results: hits.length, factFound: hit, sample: hits.slice(0, 2).map((h) => String(h.fact || h.content || JSON.stringify(h)).slice(0, 200)) };
   });

@@ -1,7 +1,7 @@
-// One memory shape for everything Sahar writes to TrueMemory:
+// One memory shape for everything una writes to TrueMemory:
 //   "<Project> · <Parent> › <Feature>: <what>. Why: <why>. (<Month YYYY>)"   (no parent: "<Project> · <Feature>: ...")
 // The path comes from mind/project-map.json: projects → features → sub-features, each with one plain line saying what it is.
-// Sahar keeps that map herself from the person's real work; mind/glossary.json is generated from it (older name table, kept readable).
+// una keeps that map herself from the person's real work; mind/glossary.json is generated from it (older name table, kept readable).
 // Pure helpers, tested without network (memshape.test.mjs).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -34,7 +34,7 @@ export function mapToGlossary(map) {
 }
 export function glossaryToMap(g) {
   return {
-    _about: "Sahar's map of the person's real work: projects, the features inside them (one plain line each: what it is and how it contributes) and sub-features nested under a parent. Built from the person's own work and kept by Sahar. Every memory is anchored to a path in this map: Project · Parent › Feature. glossary.json is generated from this file.",
+    _about: "Una's map of the person's real work: projects, the features inside them (one plain line each: what it is and how it contributes) and sub-features nested under a parent. Built from the person's own work and kept by una. Every memory is anchored to a path in this map: Project · Parent › Feature. glossary.json is generated from this file.",
     projects: Object.entries(g?.projects || {}).map(([name, p]) => ({
       name, what: p.description || '', aliases: p.aliases || [],
       features: Object.entries(p.features || {}).map(([fname, f]) => ({ name: fname, what: f.description || '', aliases: f.aliases || [], parent: f.parent || null, status: f.status || 'active' })),
@@ -170,7 +170,7 @@ export function composeMemory({ project, feature, path: featPath, what, why, whe
  * Validate + resolve a remember() call against the project map.
  * Returns { project, feature, path, newFeature, text, glossary } — glossary is the (possibly extended) map; the caller saves it when newFeature.
  * A feature the map does not know needs `parent` (an existing feature of that project, or null for a top-level one) and a one-line `what_is`,
- * so the map grows with its place and meaning. Throws ShapeError with a message telling Sahar what to fix.
+ * so the map grows with its place and meaning. Throws ShapeError with a message telling una what to fix.
  */
 export function shapeMemory(input, glossary, now = new Date()) {
   const g = glossary && glossary.projects ? glossary : { projects: {} };

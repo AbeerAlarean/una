@@ -1,8 +1,10 @@
-# Sahar
+# una
+
+<p align="center"><img src="assets/una-icon.png" width="128" alt="una"></p>
 
 **Never lose the thread. One assistant for everything you're building.**
 
-Sahar is a chief of staff for a builder's work: you talk, she decides and runs it to done, and you only ever check her.
+Una is a chief of staff for a builder's work: you talk, she decides and runs it to done, and you only ever check her.
 
 ## What she does
 
@@ -18,7 +20,7 @@ Sahar is a chief of staff for a builder's work: you talk, she decides and runs i
 ## Her brain
 
 - Her craft ships in this repo: the job description (`hub-template/CLAUDE.md`, which opens with her Principles: how she thinks), her rules and the server that enforces them. Principles outrank everything else in it.
-- Your world lives in your own TrueMemory (https://truememory.com), in a mind named "Sahar" (found by name, created if missing, or set `TM_MIND_ID`).
+- Your world lives in your own TrueMemory (https://truememory.com), in a mind named "una" (found by name, created if missing, or set `TM_MIND_ID`).
 - **A project map and one clean memory shape.** She builds `hub/mind/project-map.json` herself from your real work: projects, the features inside them (one plain line each) and sub-features under a parent. It starts empty and is never shared. Every memory is stored in one shape anchored to that map, in plain product words: "Project · Parent › Feature: what. Why: why. (Month Year)". Names resolve through aliases, PR numbers, branches and file paths are rejected, and a feature the map does not have yet needs a parent and a one-line description.
 - **Progress and standing rules live in TrueMemory by themselves.** When a card's stage, state or focus changes, a plain-words progress memory is written; `current-work.md` (what is in focus and waiting) and `standing-rules.md` (every rule you have stated, numbered, in your words, in `hub/mind/standing-rules.md`) are kept current as knowledge docs.
 - **A new machine restores itself.** On a fresh install whose TrueMemory already knows you, she rebuilds her notes from it (who you are, how you work, current work, standing rules) instead of starting from a blank First Contact, and only asks for the repos not yet cloned.
@@ -33,7 +35,7 @@ Sahar is a chief of staff for a builder's work: you talk, she decides and runs i
 - **Model picker.** Choose the model she thinks on from the window; workers default to Sonnet unless the brief names another.
 - **Spending cap.** Night work stops at a per-night cap (and an optional share of a weekly budget). The spend figure is an estimate from her own session logs.
 - **Read-only eyes.** She can look with read-only commands (git log/diff/status, `git -C`, gh pr view/checks, ls, cat, grep, `sed -n`, `jq`, curl GET, two of them joined by `&&`) and nothing that changes anything. A refusal says what to run instead. Everything else goes to a worker.
-- **Worktree cleanup, only when provably safe.** When a task's card reaches merged or done, its git worktrees are removed if the PR is merged and nothing is uncommitted, unpushed or running in them; a full pass runs at the evening wrap, and main checkouts are never touched. Repos are found under `SAHAR_CODE_DIR`. See what it would do first with `npm run cleanup` (a dry run that writes `hub/mind/worktree-report.md`), and let it act with `npm run cleanup:apply`.
+- **Worktree cleanup, only when provably safe.** When a task's card reaches merged or done, its git worktrees are removed if the PR is merged and nothing is uncommitted, unpushed or running in them; a full pass runs at the evening wrap, and main checkouts are never touched. Repos are found under `UNA_CODE_DIR`. See what it would do first with `npm run cleanup` (a dry run that writes `hub/mind/worktree-report.md`), and let it act with `npm run cleanup:apply`.
 
 ## The window
 
@@ -50,8 +52,8 @@ Focus cards for what you're really on, plus a pending list in priority order wit
 ## Start
 
 ```bash
-git clone https://github.com/AbeerAlarean/sahar.git ~/sahar
-cd ~/sahar
+git clone https://github.com/AbeerAlarean/una.git ~/una
+cd ~/una
 npm install
 npm start
 ```
@@ -68,7 +70,7 @@ npm run seed:apply   # uploads (safe to re-run)
 ### Run it as a service (macOS)
 
 ```bash
-npm run install-service     # starts at login, restarts if she stops; log in ./data/sahar.log
+npm run install-service     # starts at login, restarts if she stops; log in ./data/una.log
 npm run uninstall-service   # removes it; your hub and data are untouched
 ```
 
@@ -95,12 +97,12 @@ She introduces herself, checks your setup and tells you exactly what's missing (
 | `NIGHT_LOGS_DIR` | her Claude project logs | where the spend estimate reads |
 | `DAY_WRAP_HOUR` | `18:30` | when the end-of-day wrap may fire (`18:30` or `18.5`) |
 | `DAY_TZ` | system timezone | the timezone that decides "the first message of the day" and the wrap |
-| `TM_MIND_ID` | unset | use this TrueMemory mind instead of the one named "Sahar" |
+| `TM_MIND_ID` | unset | use this TrueMemory mind instead of the one named "una" |
 | `ROTATE_TOKENS` | `160000` | the hidden conversation is renewed past this size (invisibly, only when idle: no worker, no turn, no result waiting for her check) |
 | `LOAD_NUDGE_AT` | `8` | how many open tasks make her say "finish something first" when you start a new one |
-| `SAHAR_CODE_DIR` | the folder that holds this one, else `~/Documents` | where worktree cleanup looks for your repos |
-| `SAHAR_CLEANUP` | unset | set to `off` to turn automatic worktree cleanup off |
-| `SAHAR_USER_SETTINGS` | unset | set to `off` to ignore your global Claude Code instructions |
+| `UNA_CODE_DIR` | the folder that holds this one, else `~/Documents` | where worktree cleanup looks for your repos |
+| `UNA_CLEANUP` | unset | set to `off` to turn automatic worktree cleanup off |
+| `UNA_USER_SETTINGS` | unset | set to `off` to ignore your global Claude Code instructions |
 
 If you change your Claude account or plan, restart her.
 
@@ -119,3 +121,7 @@ npm test
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## Upgrading from "Sahar"
+
+una was called Sahar before. Run `npm run install-service` again: it removes the old `local.sahar` launch agent so only one runs. Your Keychain sign-in under `sahar.truememory` is moved to `una.truememory` automatically on first start. una looks for a mind named "una" first, then your old "Sahar" one, and only creates a new one if neither exists. Env vars `SAHAR_*` are now `UNA_*`; the old names still work. Your existing "Sahar" mind and memory space are used as they are.

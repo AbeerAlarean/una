@@ -1,7 +1,7 @@
 // Deterministic test of the REAL fence hook (no model involved).
 import { fenceHook, tmSetupLine, createPushGate, postPushHook, pushIntent, namedItem, throwawayDbUrl, blockedBy, takeBlocked } from './server.mjs';
 import { readOnlyBash } from './eyes.mjs';
-// Worker Bash calls carry an agent_id; Sahar's own (main-thread) calls don't.
+// Worker Bash calls carry an agent_id; una's own (main-thread) calls don't.
 const run = async (userText, command) => {
   const out = await fenceHook(userText)({ tool_name: 'Bash', tool_input: { command }, agent_id: 'w1' });
   return out?.hookSpecificOutput?.permissionDecision === 'deny' ? 'deny' : 'allow';
@@ -63,7 +63,7 @@ const mainCases = [
   ['Read', { file_path: `${hub}/mind/workload.md` }, 'allow'],
   ['Edit', { file_path: `${hub}/mind/workload.md` }, 'allow'],
   ['Write', { file_path: '/home/x/code/some-repo/src/x.ts' }, 'deny'],
-  ['Write', { file_path: '/tmp/../tmp/sahar-escape.md' }, 'deny'],
+  ['Write', { file_path: '/tmp/../tmp/una-escape.md' }, 'deny'],
   ['NotebookEdit', {}, 'deny'],
   ['mcp__mind__ask_mind', { query: 'x' }, 'allow'],                  // her brain: main thread only
   ['mcp__mind__remember', { text: 'x' }, 'allow'],

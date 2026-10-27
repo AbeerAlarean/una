@@ -4,7 +4,7 @@
 //   AND no unpushed commits AND no running process inside it.
 // Everything else is "keep" with the reason. Pure helpers are tested without git (cleanup.test.mjs).
 // CLI: `npm run cleanup` = dry-run report; `npm run cleanup:apply` removes the removable ones.
-// The folder scanned for repos is SAHAR_CODE_DIR (default: the folder that holds your Sahar folder, else ~/Documents). Main checkouts are never removed.
+// The folder scanned for repos is UNA_CODE_DIR (default: the folder that holds your una folder, else ~/Documents). Main checkouts are never removed.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -18,9 +18,9 @@ const PROTECTED_BRANCHES = new Set(['main', 'master', 'develop', 'staging', 'pro
 const HOME = os.homedir();
 const UI_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_HUB = process.env.HUB_DIR || path.join(UI_DIR, 'hub');
-/** Where the person's repos live. SAHAR_CODE_DIR if set; else the folder that holds the hub (when HUB_DIR is set) or the folder that holds this Sahar folder (the usual "all my repos side by side" layout); else ~/Documents. */
+/** Where the person's repos live. UNA_CODE_DIR if set; else the folder that holds the hub (when HUB_DIR is set) or the folder that holds this una folder (the usual "all my repos side by side" layout); else ~/Documents. */
 export function codeDir(env = process.env, { hubDir = DEFAULT_HUB, uiDir = UI_DIR } = {}) {
-  const pick = env.SAHAR_CODE_DIR || (env.HUB_DIR ? path.dirname(path.resolve(env.HUB_DIR)) : path.dirname(uiDir));
+  const pick = env.UNA_CODE_DIR || env.SAHAR_CODE_DIR || (env.HUB_DIR ? path.dirname(path.resolve(env.HUB_DIR)) : path.dirname(uiDir));
   try { if (fs.statSync(pick).isDirectory() && path.resolve(pick) !== path.parse(pick).root) return pick; } catch {}
   return path.join(HOME, 'Documents');
 }
@@ -189,7 +189,7 @@ export function diffClosed(tasks, last = {}) {
   return { closed, next };
 }
 
-/** One short line per kept worktree, for Sahar to tell the person. */
+/** One short line per kept worktree, for una to tell the person. */
 export function keptNote(rows) {
   const kept = rows.filter((r) => r.verdict === 'keep');
   if (!kept.length) return '';

@@ -1,4 +1,4 @@
-// Run Sahar on her own (macOS): installs or removes a launchd agent that starts her at login
+// Run una on her own (macOS): installs or removes a launchd agent that starts her at login
 // and restarts her if she stops. Usage: npm run install-service / npm run uninstall-service.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -7,9 +7,11 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const LABEL = process.env.SAHAR_SERVICE_LABEL || 'local.sahar';
+const LABEL = process.env.UNA_SERVICE_LABEL || process.env.SAHAR_SERVICE_LABEL || 'local.una';
 const PLIST = path.join(os.homedir(), 'Library', 'LaunchAgents', `${LABEL}.plist`);
-const LOG = path.join(process.env.DATA_DIR || path.join(REPO, 'data'), 'sahar.log');
+const LOG = path.join(process.env.DATA_DIR || path.join(REPO, 'data'), 'una.log');
+const LEGACY_LABEL = 'local.sahar'; // pre-rename agent; removed on install so upgrades never run two
+const LEGACY_PLIST = path.join(os.homedir(), 'Library', 'LaunchAgents', `${LEGACY_LABEL}.plist`);
 const domain = `gui/${process.getuid()}`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -61,17 +63,21 @@ function install() {
   if (process.platform !== 'darwin') { console.error('install-service uses launchd and only works on macOS. Run "npm start" instead.'); process.exit(1); }
   fs.mkdirSync(path.dirname(LOG), { recursive: true });
   fs.mkdirSync(path.dirname(PLIST), { recursive: true });
+  if (LEGACY_LABEL !== LABEL) {
+    launchctl('bootout', `${domain}/${LEGACY_LABEL}`);
+    try { fs.unlinkSync(LEGACY_PLIST); } catch {}
+  }
   launchctl('bootout', `${domain}/${LABEL}`); // replace a previous install
   fs.writeFileSync(PLIST, plist());
   if (!launchctl('bootstrap', domain, PLIST)) { console.error(`launchctl could not load ${PLIST}`); process.exit(1); }
   launchctl('kickstart', '-k', `${domain}/${LABEL}`);
-  console.log(`Sahar is running as a service (${LABEL}). Open http://localhost:${process.env.PORT || 4747}\nLog: ${LOG}\nRemove with: npm run uninstall-service`);
+  console.log(`Una is running as a service (${LABEL}). Open http://localhost:${process.env.PORT || 4747}\nLog: ${LOG}\nRemove with: npm run uninstall-service`);
 }
 
 function uninstall() {
   launchctl('bootout', `${domain}/${LABEL}`);
   try { fs.unlinkSync(PLIST); } catch {}
-  console.log(`Sahar service (${LABEL}) removed. Your hub and data are untouched.`);
+  console.log(`Una service (${LABEL}) removed. Your hub and data are untouched.`);
 }
 
 if (process.argv[2] === 'install') install();

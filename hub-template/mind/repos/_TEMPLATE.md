@@ -1,5 +1,5 @@
 # <repo> — <local path> (<github org/repo>)
-<!-- One file per repo, named <repo>.md. Sahar copies this shape at First Contact; this template file itself is never used. -->
+<!-- One file per repo, named <repo>.md. Una copies this shape at First Contact; this template file itself is never used. -->
 
 ## What it is / where it's going
 

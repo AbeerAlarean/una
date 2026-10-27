@@ -1,4 +1,4 @@
-// Check-before-done: pure helpers. A task is "checked" only when Sahar herself wrote
+// Check-before-done: pure helpers. A task is "checked" only when una herself wrote
 // mind/checks/<slug>.md after the last worker finished on it.
 
 /** "[Smart chat] x" / "Smart chat" → "smart-chat" */
@@ -35,7 +35,7 @@ export function uncheckedTasks(tasks, state, mtimeOf) {
   });
 }
 
-export const VERIFY_LINE = 'Not checked yet — Sahar is checking the result';
+export const VERIFY_LINE = 'Not checked yet — Una is checking the result';
 
 /** What the window gets: unchecked tasks shown as "verify"; her file is never rewritten. */
 export function overlayVerify(item, unchecked) {
